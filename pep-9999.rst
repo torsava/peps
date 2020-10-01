@@ -13,7 +13,7 @@ Created: 15-Sep-2020
 Abstract
 ========
 
-This PEP aims to provide a way to minimize the footprint of Python on the hard drive for constrained environments like containers. Two of the possible solutions are provided for discussion.
+This PEP aims to provide a way for downstream distributors of Python, such as Linux distributions, to minimize the footprint of Python on the hard drive for constrained environments like containers. Two of the possible solutions are provided for discussion.
 
 
 Motivation
