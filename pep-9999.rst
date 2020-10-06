@@ -147,11 +147,19 @@ Rejected Ideas
 
 Fedora is already shipping Python with a slightly smaller footprint. The Python standard library contains a lot of modules where the ``.pyc`` bytecode files are identical between optimization levels. For example some non-optimized ``.pyc`` files are identical to ``.pyc`` files of optimization level 1 (and sometimes level 2 as well). Due to this, Fedora has been able to reduce the disk footprint by hardlinking these files in cases where they are identical. However, the disk size saved was relatively minor, at 4.0 MiB or 10.7 % of Fedora's ``python3-libs`` RPM package.
 
-To minimize the footprint further, a range of ideas was considered, see `Python minimization in Fedora`_. These ideas have been then discussed on this `Fedora devel mailing list thread`_. XXX TODO list all ideas and why we rejected them
+To minimize the footprint further, a range of ideas was considered, see `Python minimization in Fedora`_. These ideas have been then discussed on this `Fedora devel mailing list thread`_. Here's a summary of the proposed solutions and a brief explanation why they were rejected for this PEP.
+ - Solution 1: Slim down the Python standard library — this is out of scope for this PEP
+ - Solution 2: Move developer oriented modules to python3-devel (or split the stdlib into pieces) — this breaks users expectations of "batteries included Python"
+ - Solution 3: Compress large data-like modules — already implemented in Fedora, but does not lead to sufficient minimization
+ - Solution 4: ZIP the entire standard library — this would break users expectations, lead to significant divergence between normal and constrained environments
+ - Solution 5: Stop shipping mandatory bytecode cache — part of the solutions proposed in this PEP
+ - Solution 6: Stop shipping mandatory optimized bytecode cache — part of the solutions proposed in this PEP
+ - Solution 7: Stop shipping mandatory source files, ship .pyc instead — part of the solutions proposed in this PEP
+ - Solution 8: Compress .pyc files — Impacts performance, does not lead to sufficient minimization
+ - Solution 9: Deduplicate bytecode cache — already implemented in Fedora, but does not lead to sufficient minimization
+ - Solution 10: Stop shipping mandatory Python, rewrite dnf to Rust — irrelevant to the Python ecosystem
 
-Compressing ``.pyc`` bytecode files (slower startup due to decompression): https://bugs.python.org/issue22789
-
-XXX TODO Add trimming stdlib as outside of the scope
+`Compressing .pyc bytecode files`_ has already been discussed, but leads to slower startup times due to decompression.
 
 Open Issues
 ===========
@@ -161,12 +169,6 @@ The exact method to accomplish the minimization has not yet been settled on. We 
 
 References
 ==========
-
-.. _`Python minimization in Fedora`:
-   https://github.com/hroncok/python-minimization/blob/master/document.md
-.. _`Fedora devel mailing list thread`:
-   https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/LACP3PFQPUO6BQQLYYJDFF4CR3DHWRSQ/
-
 .. _`Option 1: Shipping only .py files, and disabling creation of .pyc files`:
    https://github.com/encukou/cpython/tree/minimization-marker
 .. _`Option 2: Shipping the non-optimized .pyc files and compressed .py source files`:
@@ -174,6 +176,14 @@ References
 
 .. _`python3-libs`:
    https://src.fedoraproject.org/rpms/python3.9
+
+.. _`Python minimization in Fedora`:
+   https://github.com/hroncok/python-minimization/blob/master/document.md
+.. _`Fedora devel mailing list thread`:
+   https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/LACP3PFQPUO6BQQLYYJDFF4CR3DHWRSQ/
+.. _`Compressing .pyc bytecode files`:
+   https://bugs.python.org/issue22789
+
 
 Copyright
 =========
