@@ -40,11 +40,11 @@ Option 1: Shipping only ``.py`` files, and disabling creation of ``.pyc`` files
 
 A simple way of saving space is not shipping ``.pyc`` bytecode files, as they are not strictly necessary. Python programs will run fine from only ``.py`` source files. They will take a bit longer to start, but in our testing the slowdown is acceptable. For example, importing ``importlib.py`` takes on average 0.025s longer on our machines compared to the ``.pyc`` bytecode file.
 
-The problem with this method is that when Python imports a ``.py`` source file without finding a corresponding and up to date ``.pyc`` bytecode file in ``__pycache__``, it will try to create it. This is undesirable for the reasons listed in `Motivation`_. On top of that, when these files are created, the disk footprint will start to grow, defeating the purpose of minimization.
+The problem with this method is that when Python imports a ``.py`` source file without finding a corresponding and up to date ``.pyc`` bytecode file in ``__pycache__``, it will try to create it. This is undesirable for the reasons listed in `Motivation`_. On top of that, when these files are created the disk footprint will start to grow, defeating the purpose of minimization.
 
 To remedy this, we propose that distributors place a marker file in each ``__pycache__`` directory that is to be write-protected. When Python loads a ``.py`` file, it would look for such marker file in the corresponding ``__pycache__`` directory and it would skip writing the ``.pyc`` file if marker is detected. The use of a file as a marker would make this easy to configure and verify this mechanism for distributors and users alike.
 
-Of course, not all environments are constrained, it would be up to the distributor to decide their use cases and defaults. For example in Fedora, the non-optimized ``.pyc`` bytecode files *would* be shipped by default in normal environments, but could be uninstalled when desired. And the bytecode optimization levels would be available for installation, but not installed by default.
+Of course, not all environments are constrained, it would be up to the distributor to decide their use cases and defaults. For example, in Fedora the non-optimized ``.pyc`` bytecode files *would* be shipped by default in normal environments, but could be uninstalled when desired. And the bytecode optimization levels would be available for installation, but not installed by default.
 
 
 Option 2: Shipping the non-optimized ``.pyc`` files and compressed ``.py`` source files
