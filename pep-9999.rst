@@ -21,9 +21,11 @@ Motivation
 
 Some downstream Python distributors, e.g. Linux distros, make sure that for every ``.py`` source file is bytecompiled and the corresponding ``.pyc`` file is present on disk. Oftentimes 3 ``.pyc`` bytecache files are present, one non-optimized and one for each optimization level. This has many benefits:
  - It makes startup times for Python faster.
- - It sidesteps problems with user privileges, e.g. non-root users usually don't have rights to create files on the root filesystem, possibly generating SELinux warnings in the process (which can be suppressed).
  - It avoids creating untracked files on the root filesystem at runtime.
  - It makes these files verifiable by the package manager or other mechanisms.
+ - It avoids problems with user privileges:
+    - When run as root on a system with SELinux, creating the ``.pyc`` bytecache file may generate a denial alert or be denied altogether (but this can be remedied)
+    - When run under a non-root user, Python will likely lack the rights to create the ``.pyc`` bytechache file.
 
 This, however, makes the footprint of an installed Python quite large on most distributions.
 This is not always desirable. In use cases such as containers, there are efforts to keep the disk size as minimal as possible. We would like to provide a standardized way for downstream distributors to accomplish this minimization so that they don't have to reinvent the wheel, rely on hacks and/or break users expectations.
